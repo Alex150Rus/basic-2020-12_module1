@@ -109,6 +109,7 @@ public class Character : MonoBehaviour
                     _state = State.BeginAttack;
                 break;
 
+            // устанавливается при возникновении события ShootEnd в скрипте CharacterAnimationEvents
             case State.RunningFromEnemy:
                 _animator.SetFloat("Speed", runSpeed);
                 if (RunTowards(_originalPosition, 0.0f))

@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class CharacterAnimationEvents : MonoBehaviour
 {
-    Character character;
+    private Character _character;
 
     void Start()
     {
-        character = GetComponentInParent<Character>();
+        _character = GetComponentInParent<Character>();
     }
 
-    void ShootEnd()
+    // в анимации m_pistol_shoot, на определённом кадре, во вкладке Events, добавили событие и название этой функции указали
+    private void ShootEnd()
     {
-        character.SetState(Character.State.Idle);
+        _character.SetState(Character.State.Idle);
     }
 
-    void AttackEnd()
+    private void AttackEnd()
     {
-        character.SetState(Character.State.RunningFromEnemy);
+        _character.SetState(Character.State.RunningFromEnemy);
     }
 }
