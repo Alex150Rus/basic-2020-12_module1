@@ -13,13 +13,15 @@ public class Character : MonoBehaviour
         Attack,
         BeginShoot,
         Shoot,
-        targetIsDead,
+        TargetIsDead,
+        Punch,
     }
 
     public enum Weapon
     {
         Pistol,
         Bat,
+        Punch,
     }
 
     private Animator _animator;
@@ -58,6 +60,7 @@ public class Character : MonoBehaviour
             switch (weapon)
             {
                 case Weapon.Bat:
+                case Weapon.Punch:
                     _state = State.RunningToEnemy;
                     break;
                 case Weapon.Pistol:
@@ -123,12 +126,12 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginAttack:
-                _animator.SetTrigger("MeleeAttack");
+                CloseCombatAttack(weapon);
                 _state = State.Attack;
                 break;
 
             case State.Attack:
-                _state = State.targetIsDead;
+                _state = State.TargetIsDead;
                 break;
 
             // 2) состояние после выбора пистолета в качестве оружия
@@ -139,11 +142,24 @@ public class Character : MonoBehaviour
                 break;
 
             case State.Shoot:
-                _state = State.targetIsDead;
+                _state = State.TargetIsDead;
                 break;
 
-            case State.targetIsDead:
+            case State.TargetIsDead:
                targetAnimator.SetBool("isDead", true);
+                break;
+        }
+    }
+
+    private void CloseCombatAttack(Weapon weapon)
+    {
+        switch(weapon)
+        {
+            case Weapon.Punch:
+                _animator.SetTrigger("PunchAttack");
+                break;
+            case Weapon.Bat:
+                _animator.SetTrigger("MeleeAttack");
                 break;
         }
     }
