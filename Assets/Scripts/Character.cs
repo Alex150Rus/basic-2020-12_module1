@@ -21,43 +21,53 @@ public class Character : MonoBehaviour
         Bat,
     }
 
-    Animator animator;
-    State state;
+    private Animator _animator;
+    private State _state;
 
-    public Weapon weapon;
-    public Transform target;
-    public float runSpeed;
-    public float distanceFromEnemy;
-    Vector3 originalPosition;
-    Quaternion originalRotation;
+    [SerializeField] private Weapon weapon;
+    [SerializeField] private Transform target;
+    [SerializeField] private float runSpeed;
+    
+    //нужно для хулигана для атаки битой
+    [SerializeField] private float distanceFromEnemy;
+    private Vector3 _originalPosition;
+    private Quaternion _originalRotation;
 
-    void Start()
+    private void Start()
     {
-        animator = GetComponentInChildren<Animator>();
-        state = State.Idle;
-        originalPosition = transform.position;
-        originalRotation = transform.rotation;
+        //шаг1
+        _animator = GetComponentInChildren<Animator>();
+        _state = State.Idle;
+        _originalPosition = transform.position;
+        _originalRotation = transform.rotation;
     }
 
     public void SetState(State newState)
     {
-        state = newState;
+        _state = newState;
     }
 
+    //три точки компонента скрипт (сверху справа)
     [ContextMenu("Attack")]
-    void AttackEnemy()
+    private void AttackEnemy()
     {
         switch (weapon) {
             case Weapon.Bat:
-                state = State.RunningToEnemy;
+                _state = State.RunningToEnemy;
                 break;
             case Weapon.Pistol:
-                state = State.BeginShoot;
+                _state = State.BeginShoot;
                 break;
         }
     }
 
-    bool RunTowards(Vector3 targetPosition, float distanceFromTarget)
+    /// <summary>
+    /// Перемещает хулигана от врага и обратно.
+    /// </summary>
+    /// <param name="targetPosition">Позиция врага. Устанавливается в редакторе</param>
+    /// <param name="distanceFromTarget">Расстояние до врага. Устанавливается в редакторе</param>
+    /// <returns></returns>
+    private bool RunTowards(Vector3 targetPosition, float distanceFromTarget)
     {
         Vector3 distance = targetPosition - transform.position;
         if (distance.magnitude < 0.00001f) {
@@ -81,37 +91,43 @@ public class Character : MonoBehaviour
         return true;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        switch (state) {
+        // переходы состояний
+        switch (_state) {
+            // 1) первоначальное состояние
             case State.Idle:
-                transform.rotation = originalRotation;
-                animator.SetFloat("Speed", 0.0f);
+                transform.rotation = _originalRotation;
+                _animator.SetFloat("Speed", 0.0f);
                 break;
 
+            // 2) состояние после выбора биты в качестве оружия
             case State.RunningToEnemy:
-                animator.SetFloat("Speed", runSpeed);
+                // анимация бега срабатывает при условии, что скорость больше нуля. Мы здесь устанавливаем эту скорость
+                _animator.SetFloat("Speed", runSpeed);
                 if (RunTowards(target.position, distanceFromEnemy))
-                    state = State.BeginAttack;
+                    _state = State.BeginAttack;
                 break;
 
             case State.RunningFromEnemy:
-                animator.SetFloat("Speed", runSpeed);
-                if (RunTowards(originalPosition, 0.0f))
-                    state = State.Idle;
+                _animator.SetFloat("Speed", runSpeed);
+                if (RunTowards(_originalPosition, 0.0f))
+                    _state = State.Idle;
                 break;
 
             case State.BeginAttack:
-                animator.SetTrigger("MeleeAttack");
-                state = State.Attack;
+                _animator.SetTrigger("MeleeAttack");
+                _state = State.Attack;
                 break;
 
             case State.Attack:
                 break;
 
+            // 2) состояние после выбора пистолета в качестве оружия
             case State.BeginShoot:
-                animator.SetTrigger("Shoot");
-                state = State.Shoot;
+                // отрабатывает анимация выстрела. Она у нас запускается по триггеру.
+                _animator.SetTrigger("Shoot");
+                _state = State.Shoot;
                 break;
 
             case State.Shoot:
