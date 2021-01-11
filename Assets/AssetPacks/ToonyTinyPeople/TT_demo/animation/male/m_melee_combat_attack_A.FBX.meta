@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 5beb6fa42173b3346911af16b235ffc7
 ModelImporter:
-  serializedVersion: 20101
+  serializedVersion: 20200
   internalIDToNameTable:
   - first:
       1: 100000
@@ -194,7 +194,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.9616961
+      - time: 0.4412879
         functionName: AttackEnd
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -923,6 +923,7 @@ ModelImporter:
   animationType: 3
   humanoidOversampling: 1
   avatarSetup: 2
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

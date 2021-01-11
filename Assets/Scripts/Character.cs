@@ -13,6 +13,7 @@ public class Character : MonoBehaviour
         Attack,
         BeginShoot,
         Shoot,
+        targetIsDead,
     }
 
     public enum Weapon
@@ -26,6 +27,7 @@ public class Character : MonoBehaviour
 
     [SerializeField] private Weapon weapon;
     [SerializeField] private Transform target;
+    [SerializeField] private Animator targetAnimator;
     [SerializeField] private float runSpeed;
     
     //нужно для хулигана для атаки битой
@@ -51,13 +53,17 @@ public class Character : MonoBehaviour
     [ContextMenu("Attack")]
     private void AttackEnemy()
     {
-        switch (weapon) {
-            case Weapon.Bat:
-                _state = State.RunningToEnemy;
-                break;
-            case Weapon.Pistol:
-                _state = State.BeginShoot;
-                break;
+        if (!_animator.GetBool("isDead"))
+        {
+            switch (weapon)
+            {
+                case Weapon.Bat:
+                    _state = State.RunningToEnemy;
+                    break;
+                case Weapon.Pistol:
+                    _state = State.BeginShoot;
+                    break;
+            }
         }
     }
 
@@ -109,7 +115,7 @@ public class Character : MonoBehaviour
                     _state = State.BeginAttack;
                 break;
 
-            // устанавливается при возникновении события ShootEnd в скрипте CharacterAnimationEvents
+            // устанавливается при возникновении события AttackEnd() в скрипте CharacterAnimationEvents
             case State.RunningFromEnemy:
                 _animator.SetFloat("Speed", runSpeed);
                 if (RunTowards(_originalPosition, 0.0f))
@@ -122,6 +128,7 @@ public class Character : MonoBehaviour
                 break;
 
             case State.Attack:
+                _state = State.targetIsDead;
                 break;
 
             // 2) состояние после выбора пистолета в качестве оружия
@@ -132,6 +139,11 @@ public class Character : MonoBehaviour
                 break;
 
             case State.Shoot:
+                _state = State.targetIsDead;
+                break;
+
+            case State.targetIsDead:
+               targetAnimator.SetBool("isDead", true);
                 break;
         }
     }

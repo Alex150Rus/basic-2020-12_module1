@@ -11,7 +11,7 @@ public class CharacterAnimationEvents : MonoBehaviour
         _character = GetComponentInParent<Character>();
     }
 
-    // в анимации m_pistol_shoot, на определённом кадре, во вкладке Events, добавили событие и название этой функции указали
+    // в анимации m_pistol_shoot, на определённом кадре, во вкладке Events, добавили событие и название этой функции
     private void ShootEnd()
     {
         _character.SetState(Character.State.Idle);
