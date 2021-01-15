@@ -55,7 +55,7 @@ public class Character : MonoBehaviour
     [ContextMenu("Attack")]
     private void AttackEnemy()
     {
-        if (!_animator.GetBool("isDead"))
+        if (!_animator.GetBool("isDead") && !targetAnimator.GetBool("isDead"))
         {
             switch (weapon)
             {
